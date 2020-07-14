@@ -8,6 +8,7 @@ const File = require("../models/file");
 const { hashPassword } = require("../utils/utils");
 const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
+const blockBlobClient = require("../configs/azureBlobService");
 
 class FileServices {
   async getFiles(userId) {
@@ -16,6 +17,7 @@ class FileServices {
         where: {
           userId: userId,
         },
+        order: [["createdAt", "DESC"]],
       });
     } catch (error) {
       console.log(error);
@@ -45,9 +47,11 @@ class FileServices {
           name: `${file.originalname}`,
         });
       });
+
       await archive.finalize().catch((error) => {
         throw new GeneralError(error);
       });
+
       files.forEach((file) => {
         fs.unlink(file.path, (error) => console.log(error));
       });
@@ -60,16 +64,22 @@ class FileServices {
         message: message,
         expire: expire,
         password: hashedPassword,
+        fileSize: archive.pointer(),
         userId: userId,
         downloadLimit: downloadLimit,
       }).catch((error) => {
         throw new GeneralError(error);
       });
       const { id } = uploadedFiles.toJSON();
-      if (await isReachable(`${config.SHORT_URL_HOST}/api/urls`)) {
-        const response = await axios.post(`${config.SHORT_URL_HOST}/api/urls`, {
-          originalUrl: `${config.HOSTNAME}:${config.PORT}/api/v1/download/${id}/preview`,
-        });
+      if (await isReachable(`${config.SHORT_URL_HOST}`)) {
+        console.log("Reachable");
+        const response = await axios.post(
+          `${config.SHORT_URL_HOST}/api/v1/urls`,
+          {
+            originalUrl: `${config.HOSTNAME}:${config.PORT}/api/v1/download/${id}/preview`,
+          }
+        );
+        console.log(response);
         await File.update(
           {
             shortUrl: response.data.data.link,
@@ -100,6 +110,30 @@ class FileServices {
           where: Sequelize.and({
             id: fileId,
             userId: userId,
+          }),
+        });
+        if (file === null)
+          return {
+            fileRemoved: false,
+            fileMeta: null,
+          };
+        const { path } = file.toJSON();
+        fs.unlink(path, (error) => console.log(error));
+        await File.destroy({
+          where: {
+            id: fileId,
+          },
+        });
+        return {
+          fileRemoved: true,
+          fileMeta: file,
+        };
+      }
+      if (userId === null || !userId || userId === undefined) {
+        console.log("Deleting file");
+        const file = await File.findOne({
+          where: Sequelize.and({
+            id: fileId,
           }),
         });
         if (file === null)

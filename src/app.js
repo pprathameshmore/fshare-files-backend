@@ -1,10 +1,12 @@
+require("dotenv").config();
+const { config } = require("../src/configs/index");
 const http = require("http");
 const express = require("express");
 
 const app = express();
-const { config } = require("../src/configs/index");
 
 require("./loaders/index")(app);
 const server = http.createServer(app);
-require("../src/loaders/socket")(server);
-server.listen(config.PORT);
+server.listen(config.PORT, () => {
+  console.log("File Server running on " + config.PORT);
+});

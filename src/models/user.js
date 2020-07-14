@@ -44,8 +44,6 @@ User.init(
   }
 );
 
-//User.hasMany(File);
-
 //User.sync({ force: true });
 
 module.exports = User;

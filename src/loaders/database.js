@@ -1,7 +1,5 @@
-const Sequelize = require("sequelize");
-
 const { config } = require("../configs/index");
-
+const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
   config.DB.DB_NAME,
   config.DB.DB_USER,
@@ -12,7 +10,6 @@ const sequelize = new Sequelize(
     port: config.DB.DB_PORT,
   }
 );
-
 sequelize
   .authenticate()
   .then(() => console.log("Connected to Postgresql database"))

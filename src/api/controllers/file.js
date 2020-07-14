@@ -15,11 +15,6 @@ exports.uploadFiles = async (req, res, next) => {
     return res.status(400).send("File required");
   }
 
-  /* if (!isNaN(downloadLimit) || !isNaN(expire)) {
-    console.log("Not a number");
-    return;
-  } */
-
   const { uploadedFiles } = await FileServices.uploadFiles(req.files, {
     message,
     expire,
@@ -35,6 +30,7 @@ exports.uploadFiles = async (req, res, next) => {
     message: uploadedFiles.message,
     downloadLimit: uploadedFiles.downloadLimit,
     expire: uploadedFiles.expire,
+    fileSize: uploadedFiles.fileSize,
     shortUrl: uploadedFiles.shortUrl,
   };
   return res.status(201).json(response(201, "Files uploaded", fileMeta));

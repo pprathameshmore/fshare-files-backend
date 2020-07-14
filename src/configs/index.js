@@ -1,9 +1,4 @@
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-
-const dotenv = require("dotenv");
-
-dotenv.config();
-
 exports.config = {
   HOSTNAME: process.env.HOSTNAME,
   PORT: parseInt(process.env.PORT) || 3000,
@@ -22,4 +17,17 @@ exports.config = {
     GOOGLE_CONSUMER_SECRET: process.env.GOOGLE_CONSUMER_SECRET,
   },
   SHORT_URL_HOST: process.env.SHORT_URL_HOST,
+  CLIENT_ORIGIN: process.env.CLIENT_ORIGIN,
+  SESSION_SECRET: process.env.SESSION_SECRET,
+  REDIS: {
+    HOST: process.env.REDIS_HOST_SERVER,
+    PORT: process.env.REDIS_PORT,
+    AZURE_KEY: process.env.REDIS_AZURE_KEY,
+  },
+  AZURE: {
+    AZURE_STORAGE_CONNECTION_STRING:
+      process.env.AZURE_STORAGE_CONNECTION_STRING,
+    AZURE_STORAGE_NAME: process.env.AZURE_STORAGE_NAME,
+    AZURE_ACCOUNT_KEY: process.env.AZURE_ACCOUNT_KEY,
+  },
 };

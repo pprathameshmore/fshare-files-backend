@@ -49,6 +49,7 @@ class DownloadServices {
       if (downloads === downloadLimit) {
         await FileServices.removeFile({
           fileId,
+          userId: null,
         });
         return {
           isFileAvailable: false,
@@ -64,6 +65,7 @@ class DownloadServices {
       if (downloads === downloadLimit) {
         await FileServices.removeFile({
           fileId,
+          userId: null,
         });
         return {
           isFileAvailable: false,

@@ -1,4 +1,3 @@
-const cron = require("node-cron");
 const Container = require("typedi").Container;
 const fs = require("fs");
 const FileServices = require("../services/file");

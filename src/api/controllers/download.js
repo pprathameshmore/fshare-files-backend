@@ -4,7 +4,7 @@ const FileServices = require("../../services/file");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
 
-exports.uploadFiles = async (req, res, next) => {
+exports.downloadFile = async (req, res, next) => {
   const { fileId } = req.params;
   if (!validator.isUUID(fileId))
     return res.status(400).json(response(400, "File is not valid", null));
@@ -42,16 +42,20 @@ exports.previewFile = async (req, res, next) => {
       .json(
         response(400, "File may be not available or entered invalid ID", null)
       );
-  const fileDetails = await FileServices.getFile(fileId);
+  const fileDetails = await FileServices.getFile(fileId).catch((error) =>
+    console.log(error)
+  );
   if (!fileDetails)
     return res
-      .status(200)
-      .json(response(200, "File may be not available", null));
+      .status(400)
+      .json(response(400, "File may be not available", null));
   const file = {
     name: fileDetails.name,
     message: fileDetails.message,
     downloadFile: `${config.HOSTNAME}:${config.PORT}/api/v1/downloads/${fileDetails.id}`,
     shortUrl: fileDetails.shortUrl,
+    password: fileDetails.password,
+    fileSize: fileDetails.fileSize,
     downloads: fileDetails.downloads,
     downloadLimit: fileDetails.downloadLimit,
     createdAt: fileDetails.createdAt,

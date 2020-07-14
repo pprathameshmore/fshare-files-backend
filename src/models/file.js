@@ -41,6 +41,9 @@ File.init(
       values: ["1", "2", "3", "4", "5", "6", "7"],
       defaultValue: "1",
     },
+    fileSize: {
+      type: Sequelize.TEXT,
+    },
     password: {
       type: Sequelize.STRING,
     },
@@ -61,6 +64,6 @@ File.init(
 
 File.belongsTo(User, { constraints: true, foreignKeyConstraint: true });
 
-File.sync({ force: true });
+//File.sync({ force: true });
 
 module.exports = File;
