@@ -1,13 +1,6 @@
 const {
   BlobServiceClient,
   StorageSharedKeyCredential,
-  Aborter,
-  BlobURL,
-  BlockBlobURL,
-  ContainerURL,
-  ServiceURL,
-  StorageURL,
-  uploadStreamToBlockBlo,
 } = require("@azure/storage-blob");
 
 const { config } = require("./index");

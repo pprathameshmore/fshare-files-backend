@@ -102,7 +102,6 @@ class FileServices {
             originalUrl: `${config.HOSTNAME}:${config.PORT}/api/v1/download/${id}/preview`,
           }
         );
-        console.log(response);
         await File.update(
           {
             shortUrl: response.data.data.link,
@@ -140,8 +139,11 @@ class FileServices {
             fileRemoved: false,
             fileMeta: null,
           };
-        const { path } = file.toJSON();
-        fs.unlink(path, (error) => console.log(error));
+        const { name } = file.toJSON();
+        console.log(file.toJSON());
+        //Remove file from Azure
+        const blockBlobClient = blobServiceClient.getContainerClient("files");
+        await blockBlobClient.deleteBlob(name);
         await File.destroy({
           where: {
             id: fileId,
@@ -164,8 +166,10 @@ class FileServices {
             fileRemoved: false,
             fileMeta: null,
           };
-        const { path } = file.toJSON();
-        fs.unlink(path, (error) => console.log(error));
+        const { name } = file.toJSON();
+        //Remove file from Azure
+        const blockBlobClient = blobServiceClient.getContainerClient("files");
+        await blockBlobClient.deleteBlob(name);
         await File.destroy({
           where: {
             id: fileId,
