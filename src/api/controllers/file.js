@@ -14,6 +14,8 @@ exports.uploadFiles = async (req, res, next) => {
   if (req.files === undefined || req.files.length === 0) {
     return res.status(400).send("File required");
   }
+  console.log("File paths");
+  console.log(req.files);
 
   const { uploadedFiles } = await FileServices.uploadFiles(req.files, {
     message,

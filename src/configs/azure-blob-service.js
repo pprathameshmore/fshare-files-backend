@@ -1,9 +1,16 @@
 const {
   BlobServiceClient,
   StorageSharedKeyCredential,
+  Aborter,
+  BlobURL,
+  BlockBlobURL,
+  ContainerURL,
+  ServiceURL,
+  StorageURL,
+  uploadStreamToBlockBlo,
 } = require("@azure/storage-blob");
 
-const { config } = require("../configs/index");
+const { config } = require("./index");
 
 const sharedKeyCredential = new StorageSharedKeyCredential(
   config.AZURE.AZURE_STORAGE_NAME,
@@ -17,7 +24,7 @@ const blobServiceClient = new BlobServiceClient(
 
 /* async function main() {
   // Create a container
-  const containerName = `newcontainer${new Date().getTime()}`;
+  const containerName = `files`;
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const createContainerResponse = await containerClient.create();
   console.log(
@@ -25,7 +32,6 @@ const blobServiceClient = new BlobServiceClient(
     createContainerResponse.requestId
   );
 }
-
 main(); */
 
 module.exports = blobServiceClient;

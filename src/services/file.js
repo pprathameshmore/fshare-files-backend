@@ -8,7 +8,7 @@ const File = require("../models/file");
 const { hashPassword } = require("../utils/utils");
 const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
-const blockBlobClient = require("../configs/azureBlobService");
+const blobServiceClient = require("../configs/azure-blob-service");
 
 class FileServices {
   async getFiles(userId) {
@@ -34,12 +34,27 @@ class FileServices {
   ) {
     try {
       const filePath = "uploads/";
-      const fileName = `${userId}${Date.now()}send-files.zip`;
+      const fileName = `${userId}${Date.now()}fshare.zip`;
+
+      //Get path of container
+      const fileContainerClient = blobServiceClient.getContainerClient("files");
+      const blockBlobFile = fileContainerClient.getBlockBlobClient(fileName);
       const output = fs.createWriteStream(filePath + fileName);
       const archive = archiver("zip", {
         zlib: {
           level: 9,
         }, // Sets the compression level.
+      });
+      archive.on("warning", function (err) {
+        if (err.code === "ENOENT") {
+          console.log(err);
+        } else {
+          // throw error
+          throw err;
+        }
+      });
+      archive.on("error", function (err) {
+        throw err;
       });
       archive.pipe(output);
       files.forEach((file) => {
@@ -52,9 +67,21 @@ class FileServices {
         throw new GeneralError(error);
       });
 
+      const getReadableStream = fs.createReadStream(filePath + fileName);
+
+      const uploadBlobResponse = await blockBlobFile.uploadStream(
+        getReadableStream
+      );
+
+      console.log(`Upload block blob successfully`, uploadBlobResponse);
+      //Delete zip file
+      fs.unlink(filePath + fileName, (error) => {
+        console.log(error);
+      });
       files.forEach((file) => {
         fs.unlink(file.path, (error) => console.log(error));
       });
+
       if (password) {
         var hashedPassword = await hashPassword(password);
       }
