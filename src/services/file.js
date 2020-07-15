@@ -36,6 +36,7 @@ class FileServices {
       const filePath = "uploads/";
       const fileName = `${userId}${Date.now()}fshare.zip`;
 
+      const blobURI = `${config.AZURE.AZURE_STORAGE_CONNECTION_STRING}/${config.AZURE.CONTAINER_NAME}/${fileName}`;
       //Get path of container
       const fileContainerClient = blobServiceClient.getContainerClient("files");
       const blockBlobFile = fileContainerClient.getBlockBlobClient(fileName);
@@ -62,19 +63,14 @@ class FileServices {
           name: `${file.originalname}`,
         });
       });
-
       await archive.finalize().catch((error) => {
         throw new GeneralError(error);
       });
-
       const getReadableStream = fs.createReadStream(filePath + fileName);
-
       const uploadBlobResponse = await blockBlobFile.uploadStream(
         getReadableStream
       );
-
       console.log(`Upload block blob successfully`, uploadBlobResponse);
-      //Delete zip file
       fs.unlink(filePath + fileName, (error) => {
         console.log(error);
       });
@@ -87,7 +83,7 @@ class FileServices {
       }
       const uploadedFiles = await File.create({
         name: fileName,
-        path: filePath + fileName,
+        path: blobURI,
         message: message,
         expire: expire,
         password: hashedPassword,
