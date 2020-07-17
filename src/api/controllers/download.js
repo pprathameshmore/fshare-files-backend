@@ -29,7 +29,7 @@ exports.downloadFile = async (req, res, next) => {
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
     res.status(200).download(`uploads/${filePath}`);
-    fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+    //fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
     res.end();
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
