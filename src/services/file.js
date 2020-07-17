@@ -66,14 +66,17 @@ class FileServices {
       await archive.finalize().catch((error) => {
         throw new GeneralError(error);
       });
-      const getReadableStream = fs.createReadStream(filePath + fileName);
-      const uploadBlobResponse = await blockBlobFile.uploadStream(
-        getReadableStream
+      //const getReadableStream = fs.createReadStream(filePath + fileName);
+      const blockBlobUploadResponse = await blockBlobFile.uploadFile(
+        filePath + fileName
       );
-      console.log(`Upload block blob successfully`, uploadBlobResponse);
-      fs.unlink(filePath + fileName, (error) => {
-        console.log(error);
-      });
+
+      if (blockBlobUploadResponse) {
+        fs.unlink(filePath + fileName, (error) => {
+          console.log(error);
+        });
+      }
+
       files.forEach((file) => {
         fs.unlink(file.path, (error) => console.log(error));
       });
@@ -93,6 +96,7 @@ class FileServices {
       }).catch((error) => {
         throw new GeneralError(error);
       });
+
       const { id } = uploadedFiles.toJSON();
       if (await isReachable(`${config.SHORT_URL_HOST}`)) {
         console.log("Reachable");
