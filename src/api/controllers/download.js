@@ -28,9 +28,12 @@ exports.downloadFile = async (req, res, next) => {
       .getBlobClient(filePath)
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
-    res.status(200).download(`uploads/${filePath}`);
-    //fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-    res.end();
+    return res.status(200).download(`uploads/${filePath}`, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+    });
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -46,9 +49,12 @@ exports.downloadFile = async (req, res, next) => {
       .getBlobClient(filePath)
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
-    res.status(200).download(`uploads/${filePath}`);
-    fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-    res.end();
+    return res.status(200).download(`uploads/${filePath}`, (error) => {
+      if (error) {
+        console.log(error);
+      }
+      fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+    });
   }
 };
 

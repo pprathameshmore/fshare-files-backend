@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "@azure/storage-blob": "^12.2.0-preview.1",
+    "adm-zip": "^0.4.16",
     "archiver": "^4.0.1",
     "axios": "^0.19.2",
     "bcrypt": "^5.0.0",

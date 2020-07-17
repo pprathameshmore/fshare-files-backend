@@ -2,12 +2,14 @@ const fs = require("fs");
 const Container = require("typedi").Container;
 const axios = require("axios").default;
 const archiver = require("archiver");
+const AdmZip = require("adm-zip");
 const { Sequelize } = require("sequelize");
 const isReachable = require("is-reachable");
 const File = require("../models/file");
 const { hashPassword } = require("../utils/utils");
 const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
+const getFileSize = require("../utils/get-file-size");
 const blobServiceClient = require("../configs/azure-blob-service");
 
 class FileServices {
@@ -40,46 +42,24 @@ class FileServices {
       //Get path of container
       const fileContainerClient = blobServiceClient.getContainerClient("files");
       const blockBlobFile = fileContainerClient.getBlockBlobClient(fileName);
-      const output = fs.createWriteStream(filePath + fileName);
-      const archive = archiver("zip", {
-        zlib: {
-          level: 9,
-        }, // Sets the compression level.
-      });
-      archive.on("warning", function (err) {
-        if (err.code === "ENOENT") {
-          console.log(err);
-        } else {
-          // throw error
-          throw err;
-        }
-      });
-      archive.on("error", function (err) {
-        throw err;
-      });
-      archive.pipe(output);
+      const zip = new AdmZip();
       files.forEach((file) => {
-        archive.append(fs.createReadStream(file.path), {
-          name: `${file.originalname}`,
-        });
+        zip.addLocalFile(file.path, fileName, file.originalname);
       });
-      await archive.finalize().catch((error) => {
-        throw new GeneralError(error);
-      });
-      //const getReadableStream = fs.createReadStream(filePath + fileName);
-      const blockBlobUploadResponse = await blockBlobFile.uploadFile(
-        filePath + fileName
+      zip.writeZip(filePath + fileName);
+      const getReadableStream = fs.createReadStream(filePath + fileName);
+      const blockBlobUploadResponse = await blockBlobFile.uploadStream(
+        getReadableStream
       );
-
+      const fileSize = getFileSize(filePath + fileName);
       if (blockBlobUploadResponse) {
+        files.forEach((file) => {
+          fs.unlink(file.path, (error) => console.log(error));
+        });
         fs.unlink(filePath + fileName, (error) => {
           console.log(error);
         });
       }
-
-      files.forEach((file) => {
-        fs.unlink(file.path, (error) => console.log(error));
-      });
 
       if (password) {
         var hashedPassword = await hashPassword(password);
@@ -90,7 +70,7 @@ class FileServices {
         message: message,
         expire: expire,
         password: hashedPassword,
-        fileSize: archive.pointer(),
+        fileSize: fileSize,
         userId: userId,
         downloadLimit: downloadLimit,
       }).catch((error) => {
