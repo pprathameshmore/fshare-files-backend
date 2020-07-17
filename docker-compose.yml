@@ -7,16 +7,3 @@ services:
         build: .
         ports: 
             - '3000:3000'
-        depends_on: 
-            - db
-        links: 
-            - db
-    db:
-        container_name: fshare-db
-        restart: always
-        image: postgres
-        ports:
-            - '1000:5432'
-        environment: 
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: pmore

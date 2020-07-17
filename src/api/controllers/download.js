@@ -1,6 +1,8 @@
+const fs = require("fs");
 const DownloadServices = require("../../services/download");
 const validator = require("validator");
 const FileServices = require("../../services/file");
+const blobServiceClient = require("../../configs/azure-blob-service");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
 
@@ -10,6 +12,7 @@ exports.downloadFile = async (req, res, next) => {
     return res.status(400).json(response(400, "File is not valid", null));
   const { password } = req.body;
   if (isDefVar(password) && isDefObject(req.body)) {
+    console.log("Downloading file using password");
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
       password
@@ -18,9 +21,16 @@ exports.downloadFile = async (req, res, next) => {
       return res
         .status(404)
         .json(
-          response(404, "File may be not available or password is wrong", null)
+          response(404, "May be file not available or password is wrong", null)
         );
-    return res.status(200).download(filePath);
+    const blockBlobClient = blobServiceClient.getContainerClient("files");
+    await blockBlobClient
+      .getBlobClient(filePath)
+      .downloadToFile(`uploads/${filePath}`, 0, undefined)
+      .catch((error) => console.error(error));
+    res.status(200).download(`uploads/${filePath}`);
+    fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+    res.end();
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -30,7 +40,15 @@ exports.downloadFile = async (req, res, next) => {
       return res
         .status(404)
         .json(response(404, "File may be not available", null));
-    return res.status(200).download(filePath);
+
+    const blockBlobClient = blobServiceClient.getContainerClient("files");
+    await blockBlobClient
+      .getBlobClient(filePath)
+      .downloadToFile(`uploads/${filePath}`, 0, undefined)
+      .catch((error) => console.error(error));
+    res.status(200).download(`uploads/${filePath}`);
+    fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+    res.end();
   }
 };
 
@@ -40,7 +58,7 @@ exports.previewFile = async (req, res, next) => {
     return res
       .status(400)
       .json(
-        response(400, "File may be not available or entered invalid ID", null)
+        response(400, "May be file not available or entered invalid ID", null)
       );
   const fileDetails = await FileServices.getFile(fileId).catch((error) =>
     console.log(error)

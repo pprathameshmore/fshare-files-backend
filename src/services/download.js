@@ -28,7 +28,7 @@ class DownloadServices {
         isFileAvailable: false,
         filePath: null,
       };
-    const { path, downloads, downloadLimit, password } = getFile.toJSON();
+    const { path, downloads, downloadLimit, password, name } = getFile.toJSON();
     if (password) {
       if (!givenPassword) {
         return {
@@ -59,7 +59,7 @@ class DownloadServices {
       await this.countDownloads(fileId);
       return {
         isFileAvailable: true,
-        filePath: path,
+        filePath: name,
       };
     } else {
       if (downloads === downloadLimit) {
@@ -75,7 +75,7 @@ class DownloadServices {
       await this.countDownloads(fileId);
       return {
         isFileAvailable: true,
-        filePath: path,
+        filePath: name,
       };
     }
   }
