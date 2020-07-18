@@ -1,7 +1,6 @@
 const fs = require("fs");
 const Container = require("typedi").Container;
 const axios = require("axios").default;
-const archiver = require("archiver");
 const AdmZip = require("adm-zip");
 const { Sequelize } = require("sequelize");
 const isReachable = require("is-reachable");
@@ -99,7 +98,7 @@ class FileServices {
           throw new GeneralError(error);
         });
       }
-      require("../jobs/deleteFile").registerTask(uploadedFiles.toJSON());
+      require("../jobs/file-remove-scheduler").registerTask(uploadedFiles.toJSON());
       return {
         uploadedFiles,
       };

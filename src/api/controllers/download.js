@@ -23,17 +23,35 @@ exports.downloadFile = async (req, res, next) => {
         .json(
           response(404, "May be file not available or password is wrong", null)
         );
+    async function streamToString(readableStream) {
+      return new Promise((resolve, reject) => {
+        const chunks = [];
+        readableStream.on("data", (data) => {
+          chunks.push(data.toString());
+        });
+        readableStream.on("end", () => {
+          resolve(chunks.join(""));
+        });
+        readableStream.on("error", reject);
+      });
+    }
     const blockBlobClient = blobServiceClient.getContainerClient("files");
-    await blockBlobClient
+    let blockBlobClientResponse = await blockBlobClient
       .getBlobClient(filePath)
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
-    return res.status(200).download(`uploads/${filePath}`, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-    });
+    console.log("Response from Azure");
+    if (blockBlobClientResponse) {
+      return res
+        .status(200)
+        .set("Content-Type", "application/zip")
+        .download(`uploads/${filePath}`, (error) => {
+          if (error) {
+            console.log(error);
+          }
+          fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+        });
+    }
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -45,16 +63,22 @@ exports.downloadFile = async (req, res, next) => {
         .json(response(404, "File may be not available", null));
 
     const blockBlobClient = blobServiceClient.getContainerClient("files");
-    await blockBlobClient
+    let blockBlobClientResponse = await blockBlobClient
       .getBlobClient(filePath)
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
-    return res.status(200).download(`uploads/${filePath}`, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-    });
+
+    if (blockBlobClientResponse) {
+      return res
+        .status(200)
+        .set("Content-Type", "application/zip")
+        .download(`uploads/${filePath}`, (error) => {
+          if (error) {
+            console.log(error);
+          }
+          fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
+        });
+    }
   }
 };
 

@@ -25,3 +25,9 @@ exports.checkPassword = async (givenPassword, userPassword) => {
     throw new GeneralError(error);
   });
 };
+
+exports.addDay = (days) => {
+  var date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+};

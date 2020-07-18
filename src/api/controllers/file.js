@@ -1,5 +1,7 @@
+const fs = require("fs");
 const validator = require("validator");
 const FileServices = require("../../services/file");
+
 const { response, isDefVar } = require("../../utils/utils");
 
 exports.getAllFiles = async (req, res, next) => {
@@ -11,6 +13,16 @@ exports.getAllFiles = async (req, res, next) => {
 exports.uploadFiles = async (req, res, next) => {
   const { message, expire, password, downloadLimit } = req.body;
   const { userId } = req.user;
+
+  /* req.on("aborted", () => {
+    console.error("req aborted by client");
+    req.files.forEach((file) => {
+      fs.unlink(file.path, () => {
+        console.log("Removed corrupted files");
+      });
+    });
+  }); */
+
   if (req.files === undefined || req.files.length === 0) {
     return res.status(400).send("File required");
   }
