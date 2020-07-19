@@ -77,8 +77,7 @@ class FileServices {
       });
 
       const { id } = uploadedFiles.toJSON();
-      if (await isReachable(`https://ftinyurl.azurewebsites.net/`)) {
-        console.log("Reachable");
+      if (isReachable(`https://ftinyurl.azurewebsites.net/`)) {
         const response = await axios.post(
           `https://ftinyurl.azurewebsites.net/api/v1/urls`,
           {
