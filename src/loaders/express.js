@@ -10,7 +10,7 @@ module.exports = (app) => {
   require("./logger")(app);
   app.use(
     session({
-      secret: "prathameshmore9420",
+      secret: process.env.COOKIE_SECRET,
       resave: true,
       saveUninitialized: true,
     })
