@@ -20,8 +20,17 @@ module.exports = (app) => {
   app.use(express.static(path.join(__dirname, "public")));
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(cors());
-  //app.options("*", cors({ origin: "http://localhost:3333/" }));
+  const whitelist = ["https://fshare.netlify.app", "http://localhost:3001"];
+  var corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  };
+  app.use(cors(corsOptions));
   //API Routes
   app.use(`/${config.API_PREFIX}`, apiRouter);
   app.use(errorHandler);
