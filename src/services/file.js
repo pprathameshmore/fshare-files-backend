@@ -77,7 +77,7 @@ class FileServices {
       });
 
       const { id } = uploadedFiles.toJSON();
-      if (await isReachable(`${config.SHORT_URL_HOST}`)) {
+      if (await isReachable(`https://ftinyurl.azurewebsites.net/`)) {
         console.log("Reachable");
         const response = await axios.post(
           `https://ftinyurl.azurewebsites.net/api/v1/urls`,
@@ -98,7 +98,9 @@ class FileServices {
           throw new GeneralError(error);
         });
       }
-      require("../jobs/file-remove-scheduler").registerTask(uploadedFiles.toJSON());
+      require("../jobs/file-remove-scheduler").registerTask(
+        uploadedFiles.toJSON()
+      );
       return {
         uploadedFiles,
       };
