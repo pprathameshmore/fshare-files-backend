@@ -9,10 +9,9 @@ const { response, isDefObject, isDefVar } = require("../../utils/utils");
 exports.downloadFile = async (req, res, next) => {
   const { fileId } = req.params;
   if (!validator.isUUID(fileId))
-    return res.status(400).json(response(400, "File is not valid", null));
+    return res.status(400).json(response(400, "File is not valid", null)).end();
   const { password } = req.body;
   if (isDefVar(password) && isDefObject(req.body)) {
-    console.log("Downloading file using password");
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
       password
@@ -20,27 +19,12 @@ exports.downloadFile = async (req, res, next) => {
     if (!isFileAvailable)
       return res
         .status(404)
-        .json(
-          response(404, "May be file not available or password is wrong", null)
-        );
-    async function streamToString(readableStream) {
-      return new Promise((resolve, reject) => {
-        const chunks = [];
-        readableStream.on("data", (data) => {
-          chunks.push(data.toString());
-        });
-        readableStream.on("end", () => {
-          resolve(chunks.join(""));
-        });
-        readableStream.on("error", reject);
-      });
-    }
+        .json(response(404, "File not available or password is wrong", null));
     const blockBlobClient = blobServiceClient.getContainerClient("files");
     let blockBlobClientResponse = await blockBlobClient
       .getBlobClient(filePath)
       .downloadToFile(`uploads/${filePath}`, 0, undefined)
       .catch((error) => console.error(error));
-    console.log("Response from Azure");
     if (blockBlobClientResponse) {
       return res
         .status(200)
@@ -50,7 +34,10 @@ exports.downloadFile = async (req, res, next) => {
             console.log(error);
           }
           fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-        });
+        })
+        .end();
+    } else {
+      return res.status(500).send("Internal server error").end();
     }
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
@@ -58,9 +45,7 @@ exports.downloadFile = async (req, res, next) => {
       null
     ).catch((error) => console.log(error));
     if (!isFileAvailable)
-      return res
-        .status(404)
-        .json(response(404, "File may be not available", null));
+      return res.status(404).json(response(404, "File not available", null));
 
     const blockBlobClient = blobServiceClient.getContainerClient("files");
     let blockBlobClientResponse = await blockBlobClient
@@ -77,7 +62,8 @@ exports.downloadFile = async (req, res, next) => {
             console.log(error);
           }
           fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-        });
+        })
+        .end();
     }
   }
 };
@@ -87,16 +73,16 @@ exports.previewFile = async (req, res, next) => {
   if (!validator.isUUID(fileId))
     return res
       .status(400)
-      .json(
-        response(400, "May be file not available or entered invalid ID", null)
-      );
+      .json(response(400, "File not available or entered invalid ID", null))
+      .end();
   const fileDetails = await FileServices.getFile(fileId).catch((error) =>
     console.log(error)
   );
   if (!fileDetails)
     return res
       .status(400)
-      .json(response(400, "File may be not available", null));
+      .json(response(400, "File not available", null))
+      .end();
   const file = {
     name: fileDetails.name,
     message: fileDetails.message,
@@ -108,5 +94,5 @@ exports.previewFile = async (req, res, next) => {
     downloadLimit: fileDetails.downloadLimit,
     createdAt: fileDetails.createdAt,
   };
-  return res.status(200).json(response(200, "File Details", file));
+  return res.status(200).json(response(200, "File Details", file)).end();
 };

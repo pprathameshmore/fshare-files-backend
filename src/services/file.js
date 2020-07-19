@@ -80,9 +80,9 @@ class FileServices {
       if (await isReachable(`${config.SHORT_URL_HOST}`)) {
         console.log("Reachable");
         const response = await axios.post(
-          `${config.SHORT_URL_HOST}/api/v1/urls`,
+          `https://ftinyurl.azurewebsites.net/api/v1/urls`,
           {
-            originalUrl: `${config.HOSTNAME}:${config.PORT}/api/v1/download/${id}/preview`,
+            originalUrl: `https://fshare.netlify.app/download/${id}`,
           }
         );
         await File.update(

@@ -13,21 +13,9 @@ exports.getAllFiles = async (req, res, next) => {
 exports.uploadFiles = async (req, res, next) => {
   const { message, expire, password, downloadLimit } = req.body;
   const { userId } = req.user;
-
-  /* req.on("aborted", () => {
-    console.error("req aborted by client");
-    req.files.forEach((file) => {
-      fs.unlink(file.path, () => {
-        console.log("Removed corrupted files");
-      });
-    });
-  }); */
-
   if (req.files === undefined || req.files.length === 0) {
     return res.status(400).send("File required");
   }
-  console.log("File paths");
-  console.log(req.files);
 
   const { uploadedFiles } = await FileServices.uploadFiles(req.files, {
     message,
@@ -47,7 +35,7 @@ exports.uploadFiles = async (req, res, next) => {
     fileSize: uploadedFiles.fileSize,
     shortUrl: uploadedFiles.shortUrl,
   };
-  return res.status(201).json(response(201, "Files uploaded", fileMeta));
+  return res.status(201).json(response(201, "Files uploaded", fileMeta)).end();
 };
 
 exports.removeFile = async (req, res, next) => {
@@ -65,5 +53,5 @@ exports.removeFile = async (req, res, next) => {
     return res
       .status(200)
       .json(response(200, "You are not allowed to remove this file", fileMeta));
-  return res.status(200).json(response(200, "File removed", fileMeta));
+  return res.status(200).json(response(200, "File removed", fileMeta)).end();
 };
