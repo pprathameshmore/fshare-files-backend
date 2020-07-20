@@ -15,14 +15,13 @@ exports.generateSASToken = () => {
   const startDate = new Date();
   startDate.setMinutes(startDate.getMinutes() - 5);
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes() + 1);
+  expireDate.setMinutes(startDate.getMinutes() + 3);
 
   const result = generateBlobSASQueryParameters(
     {
       containerName: "files",
       startsOn: startDate,
       expiresOn: expireDate,
-      permissions: AccountSASPermissions.parse("rwdlac"),
       protocol: SASProtocol.HttpsAndHttp,
     },
     sharedKeyCredential
