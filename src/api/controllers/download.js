@@ -24,28 +24,11 @@ exports.downloadFile = async (req, res, next) => {
       return res
         .status(404)
         .json(response(404, "File not available or password is wrong", null));
-    /* const blockBlobClient = blobServiceClient.getContainerClient("files");
-    let blockBlobClientResponse = await blockBlobClient
-      .getBlobClient(filePath)
-      .downloadToFile(`uploads/${filePath}`, 0, undefined)
-      .catch((error) => console.error(error)); */
     const token = generateSASToken();
     const blobURLAuth = `https://fsharefiles.blob.core.windows.net/files/${filePath}?${token}`;
-    /* return res
+    return res
       .status(200)
-      .set("Content-Type", "application/zip")
-      .download(`uploads/${filePath}`, (error) => {
-        if (error) {
-          console.log(error);
-        }
-        fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-      }); */
-    console.log(filePath);
-    console.log("Downloading");
-    const request = https.get(blobURLAuth, (response) => {
-      const fileToDownload = fs.createWriteStream(`${filePath}`);
-      response.pipe(fileToDownload);
-    });
+      .json(response(200, "File Download", { downloadURL: blobURLAuth }));
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -53,24 +36,11 @@ exports.downloadFile = async (req, res, next) => {
     ).catch((error) => console.log(error));
     if (!isFileAvailable)
       return res.status(404).json(response(404, "File not available", null));
-
-    const blockBlobClient = blobServiceClient.getContainerClient("files");
-    let blockBlobClientResponse = await blockBlobClient
-      .getBlobClient(filePath)
-      .downloadToFile(`uploads/${filePath}`, 0, undefined)
-      .catch((error) => console.error(error));
-    if (blockBlobClientResponse) {
-      return res
-        .status(200)
-        .set("Content-Type", "application/zip")
-        .download(`uploads/${filePath}`, (error) => {
-          if (error) {
-            console.log(error);
-          }
-          fs.unlink(`uploads/${filePath}`, (error) => console.log(error));
-        })
-        .end();
-    }
+    const token = generateSASToken();
+    const blobURLAuth = `https://fsharefiles.blob.core.windows.net/files/${filePath}?${token}`;
+    return res
+      .status(200)
+      .json(response(200, "File Download", { downloadURL: blobURLAuth }));
   }
 };
 
