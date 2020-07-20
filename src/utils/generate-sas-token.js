@@ -1,6 +1,5 @@
 const {
   StorageSharedKeyCredential,
-  AccountSASPermissions,
   BlobSASPermissions,
   SASProtocol,
   generateBlobSASQueryParameters,
@@ -16,7 +15,7 @@ exports.generateSASToken = () => {
   const startDate = new Date();
   startDate.setMinutes(startDate.getMinutes() - 5);
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes() + 1);
+  expireDate.setMinutes(startDate.getMinutes() + 5);
 
   const result = generateBlobSASQueryParameters(
     {
