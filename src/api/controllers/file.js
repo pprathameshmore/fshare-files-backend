@@ -35,6 +35,7 @@ exports.uploadFiles = async (req, res, next) => {
     fileSize: uploadedFiles.fileSize,
     shortUrl: uploadedFiles.shortUrl,
   };
+
   return res.status(201).json(response(201, "Files uploaded", fileMeta)).end();
 };
 

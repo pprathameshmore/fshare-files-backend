@@ -10,16 +10,25 @@ const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
 const getFileSize = require("../utils/get-file-size");
 const blobServiceClient = require("../configs/azure-blob-service");
+const redisClient = require("../configs/redis");
 
 class FileServices {
   async getFiles(userId) {
     try {
-      return await File.findAll({
+      redisClient.get(userId, (error, files) => {
+        if (error) {
+          console.log(error);
+        }
+        return JSON.parse(files);
+      });
+      const files = await File.findAll({
         where: {
           userId: userId,
         },
         order: [["createdAt", "DESC"]],
       });
+      redisClient.setex(userId, 10, JSON.stringify(files));
+      return files;
     } catch (error) {
       console.log(error);
     }
