@@ -1,6 +1,7 @@
 const {
   StorageSharedKeyCredential,
   AccountSASPermissions,
+  BlobSASPermissions,
   SASProtocol,
   generateBlobSASQueryParameters,
 } = require("@azure/storage-blob");
@@ -15,13 +16,14 @@ exports.generateSASToken = () => {
   const startDate = new Date();
   startDate.setMinutes(startDate.getMinutes() - 5);
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes() + 3);
+  expireDate.setMinutes(startDate.getMinutes() + 1);
 
   const result = generateBlobSASQueryParameters(
     {
       containerName: "files",
       startsOn: startDate,
       expiresOn: expireDate,
+      permissions: BlobSASPermissions.parse("r"),
       protocol: SASProtocol.HttpsAndHttp,
     },
     sharedKeyCredential
