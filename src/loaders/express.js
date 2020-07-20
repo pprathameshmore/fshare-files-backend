@@ -16,6 +16,11 @@ module.exports = (app) => {
     "http://localhost:3001",
     "http://localhost:3000",
     "http://localhost",
+    "capacitor://localhost",
+    "ionic://localhost",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:8100",
   ];
   var corsOptions = {
     origin: function (origin, callback) {
