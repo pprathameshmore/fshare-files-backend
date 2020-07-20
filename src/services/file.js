@@ -35,7 +35,19 @@ class FileServices {
   }
 
   async getFile(fileId) {
-    return await File.findByPk(fileId);
+    redisClient.get(fileId, (error, file) => {
+      if (error) {
+        throw new GeneralError(error);
+      }
+      return JSON.parse(file);
+    });
+    try {
+      const file = await File.findByPk(fileId);
+      redisClient.setex(fileId, 60, JSON.stringify(file));
+      return file;
+    } catch (error) {
+      throw new GeneralError(error);
+    }
   }
 
   async uploadFiles(
