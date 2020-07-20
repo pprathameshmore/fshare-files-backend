@@ -1,7 +1,5 @@
 const fs = require("fs");
-const path = require("path");
 const multer = require("multer");
-const azureStorage = require("./azure-multer");
 
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
