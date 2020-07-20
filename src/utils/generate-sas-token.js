@@ -1,9 +1,7 @@
 const {
   StorageSharedKeyCredential,
   AccountSASPermissions,
-  AccountSASServices,
   SASProtocol,
-  generateAccountSASQueryParameters,
   generateBlobSASQueryParameters,
 } = require("@azure/storage-blob");
 const { config } = require("../configs/index");
@@ -17,7 +15,7 @@ exports.generateSASToken = () => {
   const startDate = new Date();
   startDate.setMinutes(startDate.getMinutes() - 5);
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes() + 60);
+  expireDate.setMinutes(startDate.getMinutes() + 1);
 
   const result = generateBlobSASQueryParameters(
     {
