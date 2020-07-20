@@ -15,6 +15,7 @@ module.exports = (app) => {
     "https://fshare.netlify.app",
     "http://localhost:3001",
     "http://localhost:3000",
+    "http://localhost",
   ];
   var corsOptions = {
     origin: function (origin, callback) {
