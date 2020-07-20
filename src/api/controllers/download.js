@@ -43,10 +43,7 @@ exports.downloadFile = async (req, res, next) => {
     console.log(filePath);
     console.log("Downloading");
     const request = https.get(blobURLAuth, (response) => {
-      const fileToDownload = fs.createWriteStream(`uploads/${filePath}`);
-      response.writeHead(200, {
-        "Content-Type": "application/zip",
-      });
+      const fileToDownload = fs.createWriteStream(`${filePath}`);
       response.pipe(fileToDownload);
     });
   } else {

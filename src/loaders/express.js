@@ -23,7 +23,7 @@ module.exports = (app) => {
   app.use(express.static(path.join(__dirname, "public")));
   app.use(passport.initialize());
   app.use(passport.session());
-  const whitelist = [
+  /* const whitelist = [
     "https://fshare.netlify.app",
     "http://localhost:3001",
     "http://localhost:3000",
@@ -37,7 +37,7 @@ module.exports = (app) => {
       }
     },
   };
-  app.use(cors(corsOptions));
+  app.use(cors(corsOptions)); */
   //API Routes
   app.use(`/${config.API_PREFIX}`, apiRouter);
   app.use(errorHandler);
