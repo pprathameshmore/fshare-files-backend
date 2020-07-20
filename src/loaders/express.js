@@ -23,7 +23,11 @@ module.exports = (app) => {
   app.use(express.static(path.join(__dirname, "public")));
   app.use(passport.initialize());
   app.use(passport.session());
-  const whitelist = ["https://fshare.netlify.app", "http://localhost:3001"];
+  const whitelist = [
+    "https://fshare.netlify.app",
+    "http://localhost:3001",
+    "http://localhost:3000",
+  ];
   var corsOptions = {
     origin: function (origin, callback) {
       if (whitelist.indexOf(origin) !== -1) {
