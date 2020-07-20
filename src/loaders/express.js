@@ -6,16 +6,7 @@ module.exports = (app) => {
   const errorHandler = require("../api/middlewares/errorHandler");
   const apiRouter = require("../api/routes/index");
   require("./logger")(app);
-  /*  app.use(
-    session({
-      secret: process.env.COOKIE_SECRET,
-      resave: true,
-      saveUninitialized: true,
-      cookie: {
-        sameSite: "none",
-      },
-    })
-  ); */
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, "public")));
