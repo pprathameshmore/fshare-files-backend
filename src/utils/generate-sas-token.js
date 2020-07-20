@@ -21,6 +21,7 @@ exports.generateSASToken = () => {
     {
       containerName: "files",
       startsOn: startDate,
+      expiresOn: expireDate,
       permissions: BlobSASPermissions.parse("r"),
       protocol: SASProtocol.HttpsAndHttp,
     },
