@@ -13,9 +13,10 @@ exports.generateSASToken = () => {
   );
 
   const startDate = new Date();
-  startDate.setMinutes(startDate.getMinutes() - 5);
+  //startDate.setMinutes(startDate.getMinutes());
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes() + 6);
+  expireDate.setMinutes(startDate.getMinutes());
+  expireDate.setSeconds(60);
 
   const result = generateBlobSASQueryParameters(
     {
