@@ -27,7 +27,7 @@ exports.checkPassword = async (givenPassword, userPassword) => {
 };
 
 exports.addDay = (days) => {
-  var date = new Date();
+  let date = new Date();
   date.setDate(date.getDate() + days);
   return date;
 };
