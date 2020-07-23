@@ -5,7 +5,6 @@ const path = require("path");
 const DownloadServices = require("../../services/download");
 const validator = require("validator");
 const FileServices = require("../../services/file");
-const blobServiceClient = require("../../configs/azure-blob-service");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
 const { generateSASToken } = require("../../utils/generate-sas-token");
