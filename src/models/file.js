@@ -31,6 +31,10 @@ File.init(
     downloadLimit: {
       type: Sequelize.INTEGER,
       defaultValue: 100,
+      validate: {
+        max: 100,
+        min: 1,
+      },
     },
     message: {
       type: Sequelize.TEXT,
