@@ -13,8 +13,7 @@ exports.generateSASToken = () => {
   );
 
   const startDate = new Date();
-  startDate.setMinutes(startDate.getMinutes() - 1);
-  startDate.setSeconds(startDate.getSeconds() - 10);
+  startDate.setMinutes(startDate.getMinutes() - 5);
   const expireDate = new Date();
   expireDate.setMinutes(startDate.getMinutes() + 1);
 
