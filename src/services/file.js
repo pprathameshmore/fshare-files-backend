@@ -11,6 +11,7 @@ const { config } = require("../configs/index");
 const getFileSize = require("../utils/get-file-size");
 const blobServiceClient = require("../configs/azure-blob-service");
 const redisClient = require("../configs/redis");
+const Archiver = require("../utils/zip-files");
 
 class FileServices {
   async getFiles(userId) {
@@ -62,11 +63,7 @@ class FileServices {
       //Get path of container
       const fileContainerClient = blobServiceClient.getContainerClient("files");
       const blockBlobFile = fileContainerClient.getBlockBlobClient(fileName);
-      const zip = new AdmZip();
-      files.forEach((file) => {
-        zip.addLocalFile(file.path, fileName, file.originalname);
-      });
-      zip.writeZip(filePath + fileName);
+      Archiver.compressFiles(files, fileName, filePath);
       const getReadableStream = fs.createReadStream(filePath + fileName);
       const blockBlobUploadResponse = await blockBlobFile.uploadStream(
         getReadableStream
