@@ -13,13 +13,13 @@ exports.generateSASToken = () => {
   );
 
   const startDate = new Date();
+  startDate.setMinutes(startDate.getMinutes() - 1);
   const expireDate = new Date();
-  expireDate.setMinutes(startDate.getMinutes());
-  expireDate.setSeconds(60);
+  expireDate.setMinutes(startDate.getMinutes() + 1);
 
   const result = generateBlobSASQueryParameters(
     {
-      containerName: "files",
+      containerName: config.AZURE.CONTAINER_NAME,
       startsOn: startDate,
       expiresOn: expireDate,
       permissions: BlobSASPermissions.parse("r"),

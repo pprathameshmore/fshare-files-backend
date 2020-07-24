@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const fs = require("fs");
 const { GeneralError } = require("./errors");
 
 exports.response = (statusCode, message, data) => {
@@ -30,4 +31,10 @@ exports.addDay = (days) => {
   let date = new Date();
   date.setDate(date.getDate() + days);
   return date;
+};
+
+exports.getFileSize = (filePath) => {
+  const stats = fs.statSync(filePath);
+  const fileSizeInBytes = stats["size"];
+  return fileSizeInBytes;
 };
