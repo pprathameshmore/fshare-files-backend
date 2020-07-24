@@ -31,5 +31,10 @@ exports.config = {
     AZURE_ACCOUNT_KEY: process.env.AZURE_ACCOUNT_KEY,
     AZURE_CONNECTION_STRING: process.env.AZURE_CONNECTION_STRING,
     CONTAINER_NAME: process.env.STORAGE_CONTAINER_NAME,
+    BLOB_URL:
+      process.env.AZURE_STORAGE_CONNECTION_STRING +
+      "/" +
+      process.env.STORAGE_CONTAINER_NAME +
+      "/",
   },
 };

@@ -1,13 +1,9 @@
-const fs = require("fs");
-const https = require("https");
-const url = require("url");
-const path = require("path");
 const DownloadServices = require("../../services/download");
 const validator = require("validator");
 const FileServices = require("../../services/file");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
-const { generateSASToken } = require("../../utils/generate-sas-token");
+const { generateSASToken } = require("../../helpers/generate-sas-token");
 
 exports.downloadFile = async (req, res, next) => {
   const { fileId } = req.params;
@@ -24,7 +20,7 @@ exports.downloadFile = async (req, res, next) => {
         .status(404)
         .json(response(404, "File not available or password is wrong", null));
     const token = generateSASToken();
-    const blobURLAuth = `https://fsharefiles.blob.core.windows.net/files/${filePath}?${token}`;
+    const blobURLAuth = `${config.AZURE.BLOB_URL}${filePath}?${token}`;
     return res
       .status(200)
       .json(response(200, "File Download", { downloadURL: blobURLAuth }));
@@ -36,7 +32,7 @@ exports.downloadFile = async (req, res, next) => {
     if (!isFileAvailable)
       return res.status(404).json(response(404, "File not available", null));
     const token = generateSASToken();
-    const blobURLAuth = `https://fsharefiles.blob.core.windows.net/files/${filePath}?${token}`;
+    const blobURLAuth = `${config.AZURE.BLOB_URL}${filePath}?${token}`;
     return res
       .status(200)
       .json(response(200, "File Download", { downloadURL: blobURLAuth }));
