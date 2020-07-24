@@ -1,17 +1,15 @@
 const fs = require("fs");
 const Container = require("typedi").Container;
 const axios = require("axios").default;
-const AdmZip = require("adm-zip");
 const { Sequelize } = require("sequelize");
 const isReachable = require("is-reachable");
 const File = require("../models/file");
-const { hashPassword } = require("../utils/utils");
-const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
+const { hashPassword, getFileSize } = require("../utils/utils");
+const { GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
-const getFileSize = require("../utils/get-file-size");
-const blobServiceClient = require("../configs/azure-blob-service");
 const redisClient = require("../configs/redis");
-const Archiver = require("../utils/zip-files");
+const Archiver = require("../helpers/zip-files");
+const AzureBlobServices = require("../services/azure-blob");
 
 class FileServices {
   async getFiles(userId) {
@@ -58,18 +56,14 @@ class FileServices {
     try {
       const filePath = "uploads/";
       const fileName = `${userId}${Date.now()}fshare.zip`;
-
-      const blobURI = `${config.AZURE.AZURE_STORAGE_CONNECTION_STRING}/${config.AZURE.CONTAINER_NAME}/${fileName}`;
-      //Get path of container
-      const fileContainerClient = blobServiceClient.getContainerClient("files");
-      const blockBlobFile = fileContainerClient.getBlockBlobClient(fileName);
+      const blobURI = `${config.AZURE.BLOB_URL}${fileName}`;
       Archiver.compressFiles(files, fileName, filePath);
-      const getReadableStream = fs.createReadStream(filePath + fileName);
-      const blockBlobUploadResponse = await blockBlobFile.uploadStream(
-        getReadableStream
-      );
       const fileSize = getFileSize(filePath + fileName);
-      if (blockBlobUploadResponse) {
+      const blockBlobUploadResponse = await AzureBlobServices.uploadFileToBlob({
+        blobName: fileName,
+        dirName: filePath,
+      });
+      if (blockBlobUploadResponse._response.status === 201) {
         files.forEach((file) => {
           fs.unlink(file.path, (error) => console.log(error));
         });
@@ -77,7 +71,6 @@ class FileServices {
           console.log(error);
         });
       }
-
       if (password) {
         var hashedPassword = await hashPassword(password);
       }
@@ -123,7 +116,6 @@ class FileServices {
       };
     } catch (error) {
       console.log(error);
-      throw new BadRequest(error);
     }
   }
 
@@ -143,9 +135,7 @@ class FileServices {
           };
         const { name } = file.toJSON();
         console.log(file.toJSON());
-        //Remove file from Azure
-        const blockBlobClient = blobServiceClient.getContainerClient("files");
-        await blockBlobClient.deleteBlob(name);
+        await AzureBlobServices.removeFileFromBlob(name);
         await File.destroy({
           where: {
             id: fileId,
@@ -157,7 +147,6 @@ class FileServices {
         };
       }
       if (userId === null || !userId || userId === undefined) {
-        console.log("Deleting file");
         const file = await File.findOne({
           where: Sequelize.and({
             id: fileId,
@@ -169,9 +158,7 @@ class FileServices {
             fileMeta: null,
           };
         const { name } = file.toJSON();
-        //Remove file from Azure
-        const blockBlobClient = blobServiceClient.getContainerClient("files");
-        await blockBlobClient.deleteBlob(name);
+        await AzureBlobServices.removeFileFromBlob(name);
         await File.destroy({
           where: {
             id: fileId,
@@ -183,8 +170,7 @@ class FileServices {
         };
       }
     } catch (error) {
-      console.log(error);
-      throw new NotFound("File is not found");
+      throw new GeneralError(error);
     }
   }
 }
