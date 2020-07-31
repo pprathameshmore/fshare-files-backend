@@ -3,7 +3,7 @@ const Container = require("typedi").Container;
 const FileServices = require("../services/file");
 const File = require("../models/file");
 const { checkPassword } = require("../utils/utils");
-const { BadRequest, NotFound, GeneralError } = require("../utils/errors");
+const { GeneralError } = require("../utils/errors");
 
 class DownloadServices {
   async countDownloads(fileId) {

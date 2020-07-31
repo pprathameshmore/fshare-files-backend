@@ -14,7 +14,7 @@ exports.downloadFile = async (req, res, next) => {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
       password
-    ).catch((error) => console.log(error));
+    );
     if (!isFileAvailable)
       return res
         .status(404)
@@ -28,7 +28,7 @@ exports.downloadFile = async (req, res, next) => {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
       null
-    ).catch((error) => console.log(error));
+    );
     if (!isFileAvailable)
       return res.status(404).json(response(404, "File not available", null));
     const token = generateSASToken();
@@ -46,9 +46,7 @@ exports.previewFile = async (req, res, next) => {
       .status(400)
       .json(response(400, "File not available or entered invalid ID", null))
       .end();
-  const fileDetails = await FileServices.getFile(fileId).catch((error) =>
-    console.log(error)
-  );
+  const fileDetails = await FileServices.getFile(fileId);
   if (!fileDetails)
     return res
       .status(400)

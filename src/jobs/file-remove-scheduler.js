@@ -11,7 +11,7 @@ class DeleteFilesScheduler {
       await FileServices.removeFile({
         fileId: id,
         userId: null,
-      }).catch((error) => console.log(error));
+      });
     });
   }
 }
