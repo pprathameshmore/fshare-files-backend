@@ -10,6 +10,16 @@ class AzureBlobService {
       config.AZURE.CONTAINER_NAME
     );
   }
+  async downloadFile(fileName) {
+    const timestamp = Date.now().toString();
+    //const random = Math.floor(Math.random() * 100 + 1);
+    const response = await this.fileContainerClient
+      .getBlobClient(fileName)
+      .downloadToFile(`download-temp/${timestamp}${fileName}`, 0, undefined)
+      .catch((error) => console.log(error));
+
+    return { response, timestamp };
+  }
   async uploadFileToBlob({ blobName, dirName }) {
     const blobBlockFile = this.fileContainerClient.getBlockBlobClient(blobName);
     const getReadableStream = fs.createReadStream(dirName + blobName);
