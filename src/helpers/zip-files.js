@@ -6,7 +6,6 @@ function compressFiles(files, archiverName, dirPath) {
     zip.addLocalFile(file.path, null, file.originalname);
   });
   zip.writeZip(dirPath + archiverName);
-  delete zip;
 }
 
 module.exports = {
