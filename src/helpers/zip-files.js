@@ -1,18 +1,6 @@
 const AdmZip = require("adm-zip");
-const Container = require("typedi").Container;
 
 const zip = new AdmZip();
-/* class Archiver {
-  constructor() {
-    this.zip = new AdmZip();
-  }
-  compressFiles(files, archiverName, dirPath) {
-    files.forEach((file) => {
-      this.zip.addLocalFile(file.path, null, file.originalname);
-    });
-    this.zip.writeZip(dirPath + archiverName);
-  }
-} */
 
 function compressFiles(files, archiverName, dirPath) {
   files.forEach((file) => {
@@ -20,6 +8,8 @@ function compressFiles(files, archiverName, dirPath) {
   });
   zip.writeZip(dirPath + archiverName);
 }
+
+delete zip;
 
 module.exports = {
   compressFiles: compressFiles,
