@@ -31,8 +31,8 @@ module.exports = (app) => {
       }
     },
   };
-  app.use(cors(corsOptions));
-  app.options("*", cors(corsOptions));
+  //app.use(cors(corsOptions));
+  //app.options("*", cors(corsOptions));
   //API Routes
   app.use(`/${config.API_PREFIX}`, apiRouter);
   app.use(errorHandler);

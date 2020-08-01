@@ -1,9 +1,10 @@
+const fs = require("fs");
 const DownloadServices = require("../../services/download");
+const AzureBlobServices = require("../../services/azure-blob");
 const validator = require("validator");
 const FileServices = require("../../services/file");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
-const { generateSASToken } = require("../../helpers/generate-sas-token");
 
 exports.downloadFile = async (req, res, next) => {
   const { fileId } = req.params;
@@ -19,11 +20,19 @@ exports.downloadFile = async (req, res, next) => {
       return res
         .status(404)
         .json(response(404, "File not available or password is wrong", null));
-    const token = generateSASToken();
-    const blobURLAuth = `${config.AZURE.BLOB_URL}${filePath}?${token}`;
-    return res
-      .status(200)
-      .json(response(200, "File Download", { downloadURL: blobURLAuth }));
+
+    //Stream file directly to user
+    const { response, timestamp } = await AzureBlobServices.downloadFile(
+      filePath
+    );
+    if (response._response.status === 200) {
+      const fileName = `download-temp/${timestamp}${filePath}`;
+      return res.status(200).download(fileName, () => {
+        fs.unlink(fileName, (error) => {
+          console.log(error);
+        });
+      });
+    }
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -31,11 +40,18 @@ exports.downloadFile = async (req, res, next) => {
     );
     if (!isFileAvailable)
       return res.status(404).json(response(404, "File not available", null));
-    const token = generateSASToken();
-    const blobURLAuth = `${config.AZURE.BLOB_URL}${filePath}?${token}`;
-    return res
-      .status(200)
-      .json(response(200, "File Download", { downloadURL: blobURLAuth }));
+
+    const { response, timestamp } = await AzureBlobServices.downloadFile(
+      filePath
+    );
+    if (response._response.status === 200) {
+      const fileName = `download-temp/${timestamp}${filePath}`;
+      return res.status(200).download(fileName, () => {
+        fs.unlink(fileName, (error) => {
+          console.log(error);
+        });
+      });
+    }
   }
 };
 

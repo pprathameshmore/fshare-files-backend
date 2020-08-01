@@ -7,7 +7,7 @@ class Archiver {
   }
   compressFiles(files, archiverName, dirPath) {
     files.forEach((file) => {
-      this.zip.addLocalFile(file.path, archiverName, file.originalname);
+      this.zip.addLocalFile(file.path, null, file.originalname);
     });
     this.zip.writeZip(dirPath + archiverName);
   }
