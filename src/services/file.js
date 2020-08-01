@@ -8,7 +8,7 @@ const { hashPassword, getFileSize } = require("../utils/utils");
 const { GeneralError } = require("../utils/errors");
 const { config } = require("../configs/index");
 const redisClient = require("../configs/redis");
-const Archiver = require("../helpers/zip-files");
+const { compressFiles } = require("../helpers/zip-files");
 const AzureBlobServices = require("../services/azure-blob");
 
 class FileServices {
@@ -57,7 +57,7 @@ class FileServices {
       const filePath = "uploads/";
       const fileName = `${userId}${Date.now()}fshare.zip`;
       const blobURI = `${config.AZURE.BLOB_URL}${fileName}`;
-      Archiver.compressFiles(files, fileName, filePath);
+      compressFiles(files, fileName, filePath);
       const fileSize = getFileSize(filePath + fileName);
       const blockBlobUploadResponse = await AzureBlobServices.uploadFileToBlob({
         blobName: fileName,
