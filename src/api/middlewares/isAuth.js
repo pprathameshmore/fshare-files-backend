@@ -9,7 +9,7 @@ exports.isAuthenticated = async (req, res, next) => {
     next();
   } catch (error) {
     return res
-      .status(403)
-      .json(response(403, "Please Signin to access this route", null));
+      .status(401)
+      .json(response(401, "Please Signin to access this route", null));
   }
 };
