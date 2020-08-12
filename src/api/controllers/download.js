@@ -6,7 +6,7 @@ const FileServices = require("../../services/file");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
 
-exports.downloadFile = async (req, res, next) => {
+const downloadFileController = async (req, res, next) => {
   const { fileId } = req.params;
   if (!validator.isUUID(fileId))
     return res.status(400).json(response(400, "File is not valid", null)).end();
@@ -55,7 +55,7 @@ exports.downloadFile = async (req, res, next) => {
   }
 };
 
-exports.previewFile = async (req, res, next) => {
+const previewFileController = async (req, res, next) => {
   const { fileId } = req.params;
   if (!validator.isUUID(fileId))
     return res
@@ -80,4 +80,9 @@ exports.previewFile = async (req, res, next) => {
     createdAt: fileDetails.createdAt,
   };
   return res.status(200).json(response(200, "File Details", file)).end();
+};
+
+module.exports = {
+  downloadFileController,
+  previewFileController,
 };

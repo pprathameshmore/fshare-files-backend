@@ -1,10 +1,9 @@
-const fs = require("fs");
 const validator = require("validator");
 const FileServices = require("../../services/file");
 
 const { response, isDefVar } = require("../../utils/utils");
 
-exports.getAllFiles = async (req, res, next) => {
+const getAllFilesController = async (req, res, next) => {
   const { userId } = req.user;
   if (!userId)
     return res.status(401).json(response(401, "User required", null));
@@ -12,7 +11,7 @@ exports.getAllFiles = async (req, res, next) => {
   return res.status(200).json(response(200, "All files", files));
 };
 
-exports.uploadFiles = async (req, res, next) => {
+const uploadFilesToServerController = async (req, res, next) => {
   const { message, expire, password, downloadLimit } = req.body;
   const { userId } = req.user;
   if (!userId)
@@ -41,7 +40,7 @@ exports.uploadFiles = async (req, res, next) => {
   return res.status(201).json(response(201, "Files uploaded", fileMeta));
 };
 
-exports.removeFile = async (req, res, next) => {
+const removeFileController = async (req, res, next) => {
   const { fileId } = req.params;
   const { userId } = req.user;
   if (!userId)
@@ -59,4 +58,10 @@ exports.removeFile = async (req, res, next) => {
       .status(200)
       .json(response(200, "You are not allowed to remove this file", fileMeta));
   return res.status(200).json(response(200, "File removed", fileMeta)).end();
+};
+
+module.exports = {
+  getAllFilesController,
+  uploadFilesToServerController,
+  removeFileController,
 };

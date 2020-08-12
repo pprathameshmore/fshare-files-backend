@@ -2,8 +2,6 @@ const { Sequelize, Model } = require("sequelize");
 
 const sequelize = require("../loaders/database");
 
-const File = require("../models/file");
-
 class User extends Model {}
 
 User.init(
@@ -26,8 +24,24 @@ User.init(
         isEmail: true,
       },
     },
-    token: {
+    refreshToken: {
       type: Sequelize.STRING,
+    },
+    premium: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      require: true,
+    },
+    role: {
+      type: Sequelize.ENUM,
+      values: ["ADMIN", "USER"],
+      defaultValue: "USER",
+    },
+    profilePhoto: {
+      type: Sequelize.STRING,
+      validate: {
+        isUrl: true,
+      },
     },
     createdAt: {
       type: Sequelize.DATE,
@@ -43,5 +57,9 @@ User.init(
     sequelize,
   }
 );
+
+//User.hasMany(File);
+
+//User.sync({ force: true });
 
 module.exports = User;
