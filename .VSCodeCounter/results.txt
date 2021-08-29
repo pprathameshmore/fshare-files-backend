@@ -1,0 +1,80 @@
+Date : 2020-08-10 16:53:52
+Directory : g:\distributed-fshare-nodejs\fshare-backend
+Total : 34 files,  3647 codes, 17 comments, 130 blanks, all 3794 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          2 |      2,718 |          0 |          1 |      2,719 |
+| JavaScript |         26 |        858 |         15 |         98 |        971 |
+| YAML       |          2 |         34 |          2 |          8 |         44 |
+| Markdown   |          1 |         26 |          0 |         16 |         42 |
+| Dockerfile |          1 |          7 |          0 |          6 |         13 |
+| Ignore     |          1 |          2 |          0 |          0 |          2 |
+| SQL        |          1 |          2 |          0 |          1 |          3 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                  | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                     |         34 |      3,647 |         17 |        130 |      3,794 |
+| .github                                                                               |          1 |         26 |          2 |          7 |         35 |
+| .github\workflows                                                                     |          1 |         26 |          2 |          7 |         35 |
+| src                                                                                   |         27 |        860 |         15 |         99 |        974 |
+| src\api                                                                               |          7 |        189 |          1 |         25 |        215 |
+| src\api\controllers                                                                   |          2 |        136 |          1 |         10 |        147 |
+| src\api\middlewares                                                                   |          2 |         28 |          0 |          5 |         33 |
+| src\api\routes                                                                        |          3 |         25 |          0 |         10 |         35 |
+| src\api\routes\modules                                                                |          2 |         17 |          0 |          7 |         24 |
+| src\configs                                                                           |          4 |         87 |         11 |         13 |        111 |
+| src\helpers                                                                           |          2 |         40 |          0 |          7 |         47 |
+| src\jobs                                                                              |          1 |         17 |          0 |          2 |         19 |
+| src\loaders                                                                           |          4 |         61 |          1 |          8 |         70 |
+| src\models                                                                            |          3 |        109 |          1 |         15 |        125 |
+| src\models\sql                                                                        |          1 |          2 |          0 |          1 |          3 |
+| src\services                                                                          |          3 |        292 |          1 |         14 |        307 |
+| src\utils                                                                             |          2 |         55 |          0 |         12 |         67 |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                              | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| g:\distributed-fshare-nodejs\fshare-backend\.dockerignore                             | Ignore     |          2 |          0 |          0 |          2 |
+| g:\distributed-fshare-nodejs\fshare-backend\.github\workflows\master_fshare-files.yml | YAML       |         26 |          2 |          7 |         35 |
+| g:\distributed-fshare-nodejs\fshare-backend\Dockerfile                                | Dockerfile |          7 |          0 |          6 |         13 |
+| g:\distributed-fshare-nodejs\fshare-backend\README.md                                 | Markdown   |         26 |          0 |         16 |         42 |
+| g:\distributed-fshare-nodejs\fshare-backend\docker-compose.yml                        | YAML       |          8 |          0 |          1 |          9 |
+| g:\distributed-fshare-nodejs\fshare-backend\package-lock.json                         | JSON       |      2,682 |          0 |          1 |      2,683 |
+| g:\distributed-fshare-nodejs\fshare-backend\package.json                              | JSON       |         36 |          0 |          0 |         36 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\controllers\download.js           | JavaScript |         78 |          1 |          5 |         84 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\controllers\file.js               | JavaScript |         58 |          0 |          5 |         63 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\middlewares\errorHandler.js       | JavaScript |         14 |          0 |          3 |         17 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\middlewares\isAuth.js             | JavaScript |         14 |          0 |          2 |         16 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\routes\index.js                   | JavaScript |          8 |          0 |          3 |         11 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\routes\modules\download.js        | JavaScript |          6 |          0 |          3 |          9 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\api\routes\modules\file.js            | JavaScript |         11 |          0 |          4 |         15 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\app.js                                | JavaScript |         10 |          0 |          3 |         13 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\configs\azure-blob-service.js         | JavaScript |         14 |         11 |          6 |         31 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\configs\index.js                      | JavaScript |         40 |          0 |          1 |         41 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\configs\multer.js                     | JavaScript |         26 |          0 |          3 |         29 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\configs\redis.js                      | JavaScript |          7 |          0 |          3 |         10 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\helpers\generate-sas-token.js         | JavaScript |         29 |          0 |          4 |         33 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\helpers\zip-files.js                  | JavaScript |         11 |          0 |          3 |         14 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\jobs\file-remove-scheduler.js         | JavaScript |         17 |          0 |          2 |         19 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\loaders\database.js                   | JavaScript |         17 |          0 |          2 |         19 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\loaders\express.js                    | JavaScript |         36 |          1 |          3 |         40 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\loaders\index.js                      | JavaScript |          4 |          0 |          1 |          5 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\loaders\logger.js                     | JavaScript |          4 |          0 |          2 |          6 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\models\file.js                        | JavaScript |         65 |          1 |          8 |         74 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\models\sql\init_database.sql          | SQL        |          2 |          0 |          1 |          3 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\models\user.js                        | JavaScript |         42 |          0 |          6 |         48 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\services\azure-blob.js                | JavaScript |         39 |          1 |          4 |         44 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\services\download.js                  | JavaScript |         81 |          0 |          4 |         85 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\services\file.js                      | JavaScript |        172 |          0 |          6 |        178 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\utils\errors.js                       | JavaScript |         22 |          0 |          4 |         26 |
+| g:\distributed-fshare-nodejs\fshare-backend\src\utils\utils.js                        | JavaScript |         33 |          0 |          8 |         41 |
+| Total                                                                                 |            |      3,647 |         17 |        130 |      3,794 |
++---------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

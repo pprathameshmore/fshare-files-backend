@@ -15,16 +15,5 @@ const blobServiceClient = new BlobServiceClient(
   sharedKeyCredential
 );
 
-/* async function main() {
-  // Create a container
-  const containerName = `files`;
-  const containerClient = blobServiceClient.getContainerClient(containerName);
-  const createContainerResponse = await containerClient.create();
-  console.log(
-    `Create container ${containerName} successfully`,
-    createContainerResponse.requestId
-  );
-}
-main(); */
 
 module.exports = blobServiceClient;

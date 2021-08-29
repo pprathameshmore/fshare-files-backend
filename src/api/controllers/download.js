@@ -1,7 +1,7 @@
 const fs = require("fs");
 const DownloadServices = require("../../services/download");
-const AzureBlobServices = require("../../services/azure-blob");
 const validator = require("validator");
+const path = require("path");
 const FileServices = require("../../services/file");
 const { config } = require("../../configs/index");
 const { response, isDefObject, isDefVar } = require("../../utils/utils");
@@ -21,18 +21,15 @@ const downloadFileController = async (req, res, next) => {
         .status(404)
         .json(response(404, "File not available or password is wrong", null));
 
-    //Stream file directly to user
-    const { response, timestamp } = await AzureBlobServices.downloadFile(
-      filePath
-    );
-    if (response._response.status === 200) {
-      const fileName = `download-temp/${timestamp}${filePath}`;
-      return res.status(200).download(fileName, () => {
-        fs.unlink(fileName, (error) => {
+    console.log("File Path");
+    console.log(filePath);
+    return res
+      .status(200)
+      .download(path.join(process.cwd(), "uploads", filePath), () => {
+        fs.unlink(path.join(process.cwd(), "uploads", filePath), (error) => {
           console.log(error);
         });
       });
-    }
   } else {
     const { isFileAvailable, filePath } = await DownloadServices.downloadFile(
       fileId,
@@ -40,18 +37,15 @@ const downloadFileController = async (req, res, next) => {
     );
     if (!isFileAvailable)
       return res.status(404).json(response(404, "File not available", null));
-
-    const { response, timestamp } = await AzureBlobServices.downloadFile(
-      filePath
-    );
-    if (response._response.status === 200) {
-      const fileName = `download-temp/${timestamp}${filePath}`;
-      return res.status(200).download(fileName, () => {
-        fs.unlink(fileName, (error) => {
+    console.log("File Path");
+    console.log(filePath);
+    return res
+      .status(200)
+      .download(path.join(process.cwd(), "uploads", filePath), () => {
+        fs.unlink(path.join(process.cwd(), "uploads", filePath), (error) => {
           console.log(error);
         });
       });
-    }
   }
 };
 

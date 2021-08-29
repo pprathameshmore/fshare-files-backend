@@ -56,7 +56,7 @@ class DownloadServices {
           filePath: null,
         };
       }
-      await this.countDownloads(fileId);
+      this.countDownloads(fileId);
       return {
         isFileAvailable: true,
         filePath: name,
@@ -72,7 +72,7 @@ class DownloadServices {
           filePath: null,
         };
       }
-      await this.countDownloads(fileId);
+      this.countDownloads(fileId);
       return {
         isFileAvailable: true,
         filePath: name,

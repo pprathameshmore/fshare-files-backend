@@ -1,6 +1,6 @@
 const fs = require("fs");
 const Container = require("typedi").Container;
-const axios = require("axios").default;
+const path = require("path");
 const { Sequelize } = require("sequelize");
 const isReachable = require("is-reachable");
 const File = require("../models/file");
@@ -56,27 +56,22 @@ class FileServices {
     try {
       const filePath = "uploads/";
       const fileName = `${userId}${Date.now()}fshare.zip`;
-      const blobURI = `${config.AZURE.BLOB_URL}${fileName}`;
-      compressFiles(files, fileName, filePath);
+      //const blobURI = `${config.AZURE.BLOB_URL}${fileName}`;
+      const archiveFilePath = await compressFiles(files, fileName, filePath);
       const fileSize = getFileSize(filePath + fileName);
-      const blockBlobUploadResponse = await AzureBlobServices.uploadFileToBlob({
-        blobName: fileName,
-        dirName: filePath,
-      });
-      if (blockBlobUploadResponse._response.status === 201) {
+
+      if (archiveFilePath) {
         files.forEach((file) => {
           fs.unlink(file.path, (error) => console.log(error));
         });
-        fs.unlink(filePath + fileName, (error) => {
-          console.log(error);
-        });
       }
+
       if (password) {
         var hashedPassword = await hashPassword(password);
       }
       const uploadedFiles = await File.create({
         name: fileName,
-        path: blobURI,
+        path: filePath + fileName,
         message: message,
         expire: expire,
         password: hashedPassword,
@@ -88,26 +83,26 @@ class FileServices {
       });
 
       const { id } = uploadedFiles.toJSON();
-      if (isReachable(`https://ftinyurl.azurewebsites.net/`)) {
-        const response = await axios.post(
-          `https://ftinyurl.azurewebsites.net/api/v1/urls`,
-          {
-            originalUrl: `https://fshare.netlify.app/download/${id}`,
-          }
-        );
-        await File.update(
-          {
-            shortUrl: response.data.data.link,
-          },
-          {
-            where: {
-              id: id,
-            },
-          }
-        ).catch((error) => {
-          throw new GeneralError(error);
-        });
-      }
+      // if (isReachable(`https://ftinyurl.azurewebsites.net/`)) {
+      //   const response = await axios.post(
+      //     `https://ftinyurl.azurewebsites.net/api/v1/urls`,
+      //     {
+      //       originalUrl: `https://fshare.netlify.app/download/${id}`,
+      //     }
+      //   );
+      //   await File.update(
+      //     {
+      //       shortUrl: response.data.data.link,
+      //     },
+      //     {
+      //       where: {
+      //         id: id,
+      //       },
+      //     }
+      //   ).catch((error) => {
+      //     throw new GeneralError(error);
+      //   });
+      // }
       require("../jobs/file-remove-scheduler").registerTask(
         uploadedFiles.toJSON()
       );
@@ -134,8 +129,9 @@ class FileServices {
             fileMeta: null,
           };
         const { name } = file.toJSON();
-        console.log(file.toJSON());
-        await AzureBlobServices.removeFileFromBlob(name);
+        fs.unlink(path.join(process.cwd(), "uploads", name), (error) => {
+          console.log("File removed");
+        });
         await File.destroy({
           where: {
             id: fileId,
@@ -157,8 +153,11 @@ class FileServices {
             fileRemoved: false,
             fileMeta: null,
           };
+        console.log(file.toJSON());
         const { name } = file.toJSON();
-        await AzureBlobServices.removeFileFromBlob(name);
+        fs.unlink(path.join(process.cwd(), "uploads", name), (error) => {
+          console.log("File removed");
+        });
         await File.destroy({
           where: {
             id: fileId,
